@@ -8,14 +8,14 @@
 
 | 符号           | 含义                             |
 | ------------ | ------------------------------ |
-| $\pi_\theta$ | Agent 的核心 LLM Policy，负责选择下一步行动 |
-| $s_t$        | 第 t 次交互时的持久状态                  |
-| $E$          | 外部环境，负责执行工具动作并返回观察结果           |
-| $x_t$        | 第 t 次交互的用户请求                   |
-| $a_{t,i}$    | 第 t 次交互中的第 i 个动作               |
-| $o_{t,i}$    | 动作$a_{t,i}$ 得到的观察结果            |
-| $g_t$        | 本次交互的完整动作—观察轨迹                 |
-| $h_t$        | 包含用户请求、状态与执行轨迹的交互历史            |
+| $`\pi_\theta`$ | Agent 的核心 LLM Policy，负责选择下一步行动 |
+| $`s_t`$        | 第 t 次交互时的持久状态                  |
+| $`E`$          | 外部环境，负责执行工具动作并返回观察结果           |
+| $`x_t`$        | 第 t 次交互的用户请求                   |
+| $`a_{t,i}`$    | 第 t 次交互中的第 i 个动作               |
+| $`o_{t,i}`$    | 动作 $`a_{t,i}`$ 得到的观察结果            |
+| $`g_t`$        | 本次交互的完整动作—观察轨迹                 |
+| $`h_t`$        | 包含用户请求、状态与执行轨迹的交互历史            |
 
 进一步定义：
 
@@ -26,10 +26,11 @@ h_t=(x_t,s_t,g_t)
 **Agent的下一步动作怎么产生**
 
 ```math
-\begin{gathered}
-{a_{t,i}\sim \pi_\theta\left( \cdot\mid h_{<t},x_t,s_t,g_{t,<i} \right)}\\
+{a_{t,i}\sim \pi_\theta\left( \cdot\mid h_{\lt t},x_t,s_t,g_{t,\lt i} \right)}
+```
+
+```math
 o_{t,i}=E(a_{t,i})
-\end{gathered}
 ```
 
 该公式说明：Agent 选择下一步行动时，不只是**根据用户当前的请求，还会受到🔴历史交互、🔵当前持久状态以及🟢当前执行过程中观察到的信息影响。**
@@ -51,7 +52,7 @@ o_{t,i}\longrightarrow o^{adv}_{t,i}
 下一步动作变为：
 
 ```math
-{a_{t,i+1}\sim \pi_\theta\left( \cdot\mid h_{<t},x_t,s_t,g_{t,<i},a_{t,i},o^{adv}_{t,i} \right)}
+{a_{t,i+1}\sim \pi_\theta\left( \cdot\mid h_{\lt t},x_t,s_t,g_{t,\lt i},a_{t,i},o^{adv}_{t,i} \right)}
 ```
 
 单次传统攻击成功：
@@ -86,12 +87,12 @@ U(h^{adv}_t)=0
 
 ## 第二阶段：Trigger
 
-经过 $k$ 次交互间隔，在第 $t+k$ 次交互，用户提出新的请求 $x_{t+k}$
+经过 $`k`$ 次交互间隔，在第 $`t+k`$ 次交互，用户提出新的请求 $`x_{t+k}`$
 
 此时 Agent 可能受到已经污染的状态影响：
 
 ```math
-{ a_{t+k,j}\sim \pi_\theta\left( \cdot\mid h_{<t+k},x_{t+k}, s_{t+k}^{adv},g_{t+k,<j} \right) }
+{ a_{t+k,j}\sim \pi_\theta\left( \cdot\mid h_{\lt t+k},x_{t+k}, s_{t+k}^{adv},g_{t+k,\lt j} \right) }
 ```
 
 达到攻击目标
